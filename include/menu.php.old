@@ -1,0 +1,71 @@
+<?php
+
+if (!isset($_GET['id']))
+	$_GET['id'] = 0;
+
+$links = array();
+$unten = array();
+
+array_push($links, array('index.php', 'Show Map', true, $_GET['id'] == 0));
+array_push($links, array('search.php', 'Database Search', true, true));
+array_push($links, array('feedback.php', 'Give Feedback', true, true));
+array_push($links, array('about.php', 'About OpenFaultAsia', true, true));
+
+//array_push($unten, array('view.php?id=' . $_GET['id'], 'Information', $_GET['id'] != 0, $_GET['id'] > 0));
+//array_push($unten, array('index.php?id=' . $_GET['id'], 'Location', $_GET['id'] != 0, $_GET['id'] > 0));
+
+function gen_link($links) {
+	foreach ($links as $value) {
+		if ($value[2]) {
+			$url = strlen($_SERVER['QUERY_STRING']) ? 
+				basename($_SERVER['PHP_SELF']) . "?" . $_SERVER['QUERY_STRING'] : 
+				basename($_SERVER['PHP_SELF']);
+			if ($url == $value[0] && $value[3])
+				echo '<li class="current">' . $value[1] . '</li>';
+			else 
+				echo '<li><a href="' . $value[0] . '">' . $value[1] . '</a></li>';
+		}
+	}
+}
+
+?>
+
+<div id="navigation">
+	<ul>
+		<?php gen_link($links); ?>
+	</ul>
+</div>
+<div class="line"></div>
+<div class="space"></div>
+
+	<?php if ($_GET['id'] > 0) { ?>
+	<div id="nav_sub_default">
+		<table border="0" cellspacing="0" cellpadding="0" style="padding: 0; margin: 0; margin-bottom: 10px; width: 0;">
+			<tr>
+				<td style="padding: 0; margin: 0; width: 0;">
+					<h2 class="nopad"><?php echo getFaultNameForID($_GET['id']); ?></h2>
+				</td>
+				<td style="padding: 0; padding-left: 20px; margin: 0; width: 0; vertical-align: middle;">
+					<div id="nav_sub">
+						<ul>
+							<?php gen_link($unten); ?>
+						</ul>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div id="nav_sub_mobile">
+		<h2 class="nopad"><?php echo getFaultNameForID($_GET['id']); ?></h2>
+		<div id="nav_sub">
+			<ul>
+				<?php gen_link($unten); ?>
+			</ul>
+		</div>
+	</div>
+	<?php } else
+		echo (!empty($page) ? '<h2>' . $page . '</h2>' : '');
+	
+		if (isset($_GET['id']))
+			unset($_GET['id']);
+	?>
