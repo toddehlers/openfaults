@@ -131,7 +131,7 @@ elseif (isset($_POST['message'])) {
 
 	<strong>Message *</strong><br />
 	<textarea name="message" rows="10"><?php if (isset($_POST['message'])) echo $_POST['message']; ?></textarea><br />
-	<div class="g-recaptcha" data-sitekey="6LerCQ4UAAAAABbaJSoj70bu5t9F9hAgA4jb-jdk"></div><br />
+	<div class="g-recaptcha" data-sitekey="6LdUjxIUAAAAAHrZvfucAfw_xyxMcGaggYLnzPuL"></div><br />
 	<input type="submit" name="submit" value="Send Feedback" /><br />
 	* required
 </form>
