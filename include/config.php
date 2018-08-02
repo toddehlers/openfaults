@@ -2,9 +2,9 @@
 
 // Mysql
 $db_host = "localhost"; // Host name
-$db_username = "faults"; // Mysql username
-$db_password = "RxNm3XfQ3ZmHHwdB"; // Mysql password
-$db_name = "faults"; // DB name
+$db_username = "root"; // Mysql username
+$db_password = ""; // Mysql password
+$db_name = "cafd"; // DB name
 
 // Website name (Anzeige im Browser)
 $cfg_title = 'Central Asia Faults'; // <title>
