@@ -3,10 +3,6 @@
 
 // include all the sub-functions
 require_once 'include/include.php';
-require_once 'include/config.php';
-require_once 'include/subs.php';
-require_once 'include/subs_ofa.php';
-
 
 head("");
 

@@ -1,4 +1,4 @@
-// Programmed by Timo Strube, updated 24.05.2015
+// Programmed by Timo Strube, updated 03.05.2018
 
 ///////////////////////
 /// M A I N   M A P ///
@@ -9,32 +9,55 @@ var href = window.location.href;
 var zoomlevel = href.search('search.php');
 
 var view = new ol.View({
-	center: ol.proj.transform([((zoomlevel > -1) ? 87 : 81), ((zoomlevel > -1) ? 33 : 35.5)], 'EPSG:4326', 'EPSG:3857'),
-	resolution: ((zoomlevel > -1) ? 10000 : 5000),
+		   center: ol.proj.transform([((zoomlevel > -1) ? 87 : 81), ((zoomlevel > -1) ? 33 : 35.5)], 'EPSG:4326', 'EPSG:3857'),
+	   resolution: ((zoomlevel > -1) ? 10000 : 5000),
 	minResolution: 0,
 	maxResolution: 50000
 });
-
-var scaleLineControl = new ol.control.ScaleLine();
-
 var map = new ol.Map({
 	controls: ol.control.defaults({
 		attributionOptions: ({ collapsible: false })
 	}).extend([
-		scaleLineControl
+		new ol.control.ScaleLine()
 	]),
     target: 'map',
 	layers: [
 		new ol.layer.Tile({
 			source: new ol.source.BingMaps({
-        key: 'Aj6DIWfGOpAqw6zYpiqoOQ4UWwc-wDWOxOi1_HBnBsShQyGLCY49lxDebO6UXZiu',
+			   key: 'Aj6DIWfGOpAqw6zYpiqoOQ4UWwc-wDWOxOi1_HBnBsShQyGLCY49lxDebO6UXZiu',
         imagerySet: 'Road',
-				maxZoom: 19
+		   maxZoom: 19
       })
 		})
 	],
 	view: view
 });
+
+
+// Init Spinner
+var opts = {
+  lines: 13 // The number of lines to draw
+, length: 28 // The length of each line
+, width: 14 // The line thickness
+, radius: 42 // The radius of the inner circle
+, scale: 1 // Scales overall size of the spinner
+, corners: 1 // Corner roundness (0..1)
+, color: '#000' // #rgb or #rrggbb or array of colors
+, opacity: 0.25 // Opacity of the lines
+, rotate: 0 // The rotation offset
+, direction: 1 // 1: clockwise, -1: counterclockwise
+, speed: 1 // Rounds per second
+, trail: 60 // Afterglow percentage
+, fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
+, zIndex: 2e9 // The z-index (defaults to 2000000000)
+, className: 'spinner' // The CSS class to assign to the spinner
+, top: '50%' // Top position relative to parent
+, left: '50%' // Left position relative to parent
+, shadow: false // Whether to render a shadow
+, hwaccel: false // Whether to use hardware acceleration
+, position: 'relative' // Element positioning
+};
+var spinner = new Spinner(opts);
 
 
 /////////////////////////////
@@ -49,8 +72,8 @@ var center_zoom;
 var faultsLayer = new ol.layer.Vector({
 	source: new ol.source.Vector({
 		projection: 'EPSG:3857',
-		url: 'openlayers/ol_faults.php?id='+getQueryVariable('id')+'&search='+getQueryVariable('search'),
-		format: new ol.format.GeoJSON()
+			   url: 'openlayers/ol_faults.php?id=' + getQueryVariable('id') + '&search=' + getQueryVariable('search'),
+			format: new ol.format.GeoJSON()
 	}),
 	style: (function(feature, resolution) {
 		var zoom_res = view.getResolution();
@@ -114,21 +137,20 @@ faultsLayer.getSource().on('change', function(e) {
 /// L O A D   Q U A K E S ///
 /////////////////////////////
 
-var styleQuakeCache = [];
-var vectorSource;
+var styleCacheQuake = [];
+var vectorSourceQuake;
 
-// Load earthquakes
 function generateQuakeLayer(c, d, m) {
-	vectorSource = new ol.source.Vector({
+	vectorSourceQuake = new ol.source.Vector({
 		projection: 'EPSG:3857',
-		url: 'openlayers/ol_quakes.php?c='+c+'&d='+d+'&m='+m,
+		url: 'openlayers/ol_quakes.php?c=' + c + '&d=' + d + '&m=' + m,
 		format: new ol.format.GeoJSON()
 	});
 
 	return new ol.layer.Vector({
-		source: vectorSource,
+		source: vectorSourceQuake,
 		style: (function(feature, resolution) {
-			var radius = feature.get('magnitude') > 5 ? 10 : 5;
+			var radius = feature.get('magnitude') < 5 ? 5 : 10;
 
 			if (feature.get('data_source') == 'aftershock') {
 				var rgb = '125, 255, 0';
@@ -141,21 +163,110 @@ function generateQuakeLayer(c, d, m) {
 				var id = radius + 3;
 			}
 
-			if (!styleQuakeCache[id])
-				styleQuakeCache[id] = [new ol.style.Style({
+			if (!styleCacheQuake[id])
+				styleCacheQuake[id] = [new ol.style.Style({
 					image: new ol.style.Circle({
 						radius: radius,
 						fill: new ol.style.Fill({
-							color: 'rgba('+rgb+', 0.2)'
+							color: 'rgba(' + rgb + ', 0.2)'
 						}),
 						stroke: new ol.style.Stroke({
-							color: 'rgba('+rgb+', 1)',
+							color: 'rgba(' + rgb + ', 1)',
 							width: 1
 						})
 					})
 				})];
 
-			return styleQuakeCache[id];
+			return styleCacheQuake[id];
+		})
+	});
+}
+
+/////////////////////////////
+/// L O A D   S L I D E S ///
+/////////////////////////////
+
+var styleCacheSlide = [];
+var vectorSourceSlide;
+
+function generateSlideLayer(c, a) {
+	 vectorSourceSlide = new ol.source.Vector({
+		projection: 'EPSG:3857',
+		url: 'openlayers/ol_slides.php?c=' + c + '&a=' + a,
+		format: new ol.format.GeoJSON()
+	});
+	
+	return new ol.layer.Vector({
+		source: vectorSourceSlide,
+		style: (function(feature, resolution) {
+			var radius = feature.get('display_big') == 0 ? 5 : 10;
+
+			if (feature.get('display_big') == 0) {
+				var rgb = '200, 0, 100';
+				var id = radius + 'c' + feature.get('count');
+			} else {
+				var rgb = '200, 0, 100';
+				var id = radius + 'c' + feature.get('count');
+			}
+			
+			if (!styleCacheSlide[id])
+				styleCacheSlide[id] = [new ol.style.Style({
+					image: new ol.style.Circle({
+						radius: radius,
+						points: 3,
+						fill: new ol.style.Fill({
+							color: 'rgba(' + rgb + ', ' + Math.min(feature.get('count') / 10, 1) + ')'
+						}),
+						stroke: new ol.style.Stroke({
+							color: 'rgba(' + rgb + ', ' + Math.min(feature.get('count') / 10, 1) + ')',
+							width: 1
+						})
+					})
+				})];
+
+			return styleCacheSlide[id];
+		})
+	});
+}
+
+///////////////////////////////////////////
+/// L O A D   Q U A K E - I N D U C E D ///
+///////////////////////////////////////////
+
+var styleCacheQuakeInduced = [];
+var vectorSourceQuakeInduced;
+
+function generateQuakeInducedLayer(c, a) {
+	 vectorSourceQuakeInduced = new ol.source.Vector({
+		projection: 'EPSG:3857',
+		url: 'openlayers/ol_quakeInduced.php',
+		format: new ol.format.GeoJSON()
+	});
+	
+	id = 0;
+	
+	return new ol.layer.Vector({
+		source: vectorSourceQuakeInduced,
+		style: (function(feature, resolution) {
+			if (!styleCacheQuakeInduced[id])
+				styleCacheQuakeInduced[id] = [new ol.style.Style({
+//					image: new ol.style.Icon({
+//						src: 'images/slide-icon.png',
+//						scale: 0.2
+//					})
+					image: new ol.style.Circle({
+						radius: 10,
+						fill: new ol.style.Fill({
+							color: 'rgba(0, 0, 0, 0.5)'
+						}),
+						stroke: new ol.style.Stroke({
+							color: 'rgba(0, 0, 0, 1)',
+							width: 1
+						})
+					})
+				})];
+
+			return styleCacheQuakeInduced[id];
 		})
 	});
 }
@@ -163,98 +274,80 @@ function generateQuakeLayer(c, d, m) {
 /////////////////////
 /// B U T T O N S ///
 /////////////////////
-var quakeLayers = [];
 
-//$(document).ready(function(){ $("#tipage").multiselect(); });
-//$(document).ready(function(){ $("#usgs").multiselect(); });
+$('button').on('click', function() {
+    $('.' + this.className.split(" ")[0]).removeClass('selected');
+    $(this).addClass('selected');
+});
 
-//$("#tipage").change(function() { processMultiselect("#tipage"); });
-//$("#usgs").change(function() { processMultiselect("#usgs"); });
+var quakeLayers 		= [];
+var slideLayers 		= [];
+var quakeInducedLayers 	= [];
 
-// function processMultiselect(id) {
-	// var bin = 0, new_bin = 0, c = '', d = 0, m = 0;
-	// var input = $(id).val();
-//
-	// if (input !== null)
-		// input.forEach(function (val) {
-			// bin += parseInt(val);
-		// });
-//
-	// // Depth
-	// new_bin = bin % 8;
-	// if (new_bin != bin)
-		// d += 2;
-	// bin = new_bin;
-//
-	// new_bin = bin % 4;
-	// if (new_bin != bin)
-		// d += 1;
-	// bin = new_bin;
-//
-	// // Magnitude
-	// new_bin = bin % 2;
-	// if (new_bin != bin)
-		// m += 2;
-	// bin = new_bin;
-//
-	// new_bin = bin % 1;
-	// if (new_bin != bin)
-		// m += 1;
-//
-	// // Catalogue
-	// c = id.substr(1);
-//
-	// showQuake(c, d, m);
-// }
+var quake_mag 			= 0 // OLD : $("input[type='radio'][name='quake_mag']").val();
+var quake_depth 		= 0 // OLD : $("input[type='radio'][name='quake_depth']:checked").val();
 
-
-$(".quake_buttons").css("display", "none");
+var slide_area 			= 0 // OLD : $("input[type='radio'][name='slide_area']:checked").val();
 
 function selectionChanged() {
-	var show = $("input[type='checkbox'][name='show']").is(':checked');
-	var catalogue = $("input[type='radio'][name='catalogue']:checked").val();
-	var mag = $("input[type='radio'][name='mag']:checked").val();
-	var depth = $("input[type='radio'][name='depth']:checked").val();
+	var enableQuake 		= $("select#layer option:selected").val() == "quake"; // OLD: $("input[type='checkbox'][name='enableQuake']").is(':checked');
+	var quake_catalogue 	= $("select#quake_catalogue option:selected").val();
+	
+	var enableSlide 		= $("select#layer option:selected").val() == "slide"; // OLD: $("input[type='checkbox'][name='enableSlide']").is(':checked');
+	var slide_catalogue 	= $("select#slide_catalogue option:selected").val();
+	
+	var enableQuakeInduced 	= $("select#layer option:selected").val() == "induced"; // OLD: $("input[type='checkbox'][name='enableQuakeInduced']").is(':checked');
 
-	if (show) {
+	// Show earthquakes
+	if (enableQuake) {
 		$(".quake_buttons").css("display", "block");
-
-		showQuake(catalogue, depth, mag);
+		showQuake(quake_catalogue, quake_mag, quake_depth);		
 	} else {
 		$(".quake_buttons").css("display", "none");
-
 		quakeLayers.forEach(function (val) {
 			val.setVisible(false);
 		});
 	}
+	
+	// Show landslides
+	if (enableSlide) {
+		$(".slide_buttons").css("display", "block");
+		showSlide(slide_catalogue, slide_area);
+	} else {
+		$(".slide_buttons").css("display", "none");
+		slideLayers.forEach(function (val) {
+			val.setVisible(false);
+		});	
+	}
+	
+	// Show quake induced
+	if (enableQuakeInduced) {
+		$(".quakeInduced_buttons").css("display", "block");
+		showQuakeInduced();
+	} else {
+		$(".quakeInduced_buttons").css("display", "none");
+		quakeInducedLayers.forEach(function (val) {
+			val.setVisible(false);
+		});			
+	}
 }
 
-var opts = {
-  lines: 13 // The number of lines to draw
-, length: 28 // The length of each line
-, width: 14 // The line thickness
-, radius: 42 // The radius of the inner circle
-, scale: 1 // Scales overall size of the spinner
-, corners: 1 // Corner roundness (0..1)
-, color: '#000' // #rgb or #rrggbb or array of colors
-, opacity: 0.25 // Opacity of the lines
-, rotate: 0 // The rotation offset
-, direction: 1 // 1: clockwise, -1: counterclockwise
-, speed: 1 // Rounds per second
-, trail: 60 // Afterglow percentage
-, fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
-, zIndex: 2e9 // The z-index (defaults to 2000000000)
-, className: 'spinner' // The CSS class to assign to the spinner
-, top: '50%' // Top position relative to parent
-, left: '50%' // Left position relative to parent
-, shadow: false // Whether to render a shadow
-, hwaccel: false // Whether to use hardware acceleration
-, position: 'relative' // Element positioning
-};
-var target = document.getElementById('map_size');
-var spinner = new Spinner(opts);
+function clickQuakeMag(v) { 
+	quake_mag = v
+	selectionChanged()
+}
 
-function showQuake(c, d, m) {
+function clickQuakeDepth(v) { 
+	quake_depth = v
+	selectionChanged()
+}
+
+function clickSlideArea(v) {
+	slide_area = v
+	selectionChanged()
+}
+
+function showQuake(c, m, d) {
 	quakeLayers.forEach(function (val) {
 		val.setVisible(false);
 	});
@@ -263,24 +356,71 @@ function showQuake(c, d, m) {
   		var c_nr = '1';
     else if (c == 'usgs')
     	var c_nr = '2';
-		else if (c == 'ferghana')
-			var c_nr = '3';
+	else if (c == 'ferghana')
+		var c_nr = '3';
 
-	if (!quakeLayers[c_nr+d+m]) {
-		spinner.spin(target);
+	if (!quakeLayers[c_nr + d + m]) {
+		spinner.spin(document.getElementById('map_size'));
 
-		quakeLayers[c_nr+d+m] = generateQuakeLayer(c, d, m);
-		map.addLayer(quakeLayers[c_nr+d+m]);
+		quakeLayers[c_nr + d + m] = generateQuakeLayer(c, d, m);
+		map.addLayer(quakeLayers[c_nr + d + m]);
 
-		var listenerKey = vectorSource.on('change', function(e) {
-			if (vectorSource.getState() == 'ready') {
+		var listenerKey = vectorSourceQuake.on('change', function(e) {
+			if (vectorSourceQuake.getState() == 'ready') {
 				spinner.stop();
 				ol.Observable.unByKey(listenerKey);
 			}
 		});
 
 	} else
-		quakeLayers[c_nr+d+m].setVisible(true);
+		quakeLayers[c_nr + d + m].setVisible(true);
+}
+
+function showSlide(c, a) {
+	slideLayers.forEach(function (val) {
+		val.setVisible(false);
+	});
+
+    if (c == 'Xu_etal_2015')
+  		var c_nr = '1';
+
+	if (!slideLayers[c_nr + a]) {
+		spinner.spin(document.getElementById('map_size'));
+
+		slideLayers[c_nr + a] = generateSlideLayer(c, a);
+		map.addLayer(slideLayers[c_nr + a]);
+
+		var listenerKey = vectorSourceSlide.on('change', function(e) {
+			if (vectorSourceSlide.getState() == 'ready') {
+				spinner.stop();
+				ol.Observable.unByKey(listenerKey);
+			}
+		});
+
+	} else
+		slideLayers[c_nr + a].setVisible(true);
+}
+
+function showQuakeInduced() {
+	quakeInducedLayers.forEach(function (val) {
+		val.setVisible(false);
+	});
+
+	if (!quakeInducedLayers[0]) {
+		spinner.spin(document.getElementById('map_size'));
+
+		quakeInducedLayers[0] = generateQuakeInducedLayer();
+		map.addLayer(quakeInducedLayers[0]);
+
+		var listenerKey = vectorSourceQuakeInduced.on('change', function(e) {
+			if (vectorSourceQuakeInduced.getState() == 'ready') {
+				spinner.stop();
+				ol.Observable.unByKey(listenerKey);
+			}
+		});
+
+	} else
+		quakeInducedLayers[0].setVisible(true);
 }
 
 
@@ -288,31 +428,56 @@ function showQuake(c, d, m) {
 /// P O P U P ///
 /////////////////
 
-// Add popup functionality
-var container = document.getElementById('popup');
-var overlay = new ol.Overlay({ element: container });
-map.addOverlay(overlay);
+// Add tooltip functionality
+var tooltip = document.getElementById('tooltip');
+var overlay_tooltip = new ol.Overlay({ element: tooltip });
+map.addOverlay(overlay_tooltip);
+
+// Add infobox functionality
+var infobox = document.getElementById('infobox');
+var overlay_infobox = new ol.Overlay({ element: infobox });
+map.addOverlay(overlay_infobox);
 
 // Generate Info Box
 var displayFeatureInfo = function(pixel, coords) {
 	var feature = getFeature(pixel);
 
-	if (feature && feature.get('fault_id') > 0 && feature.get('name') != '') {
-		container.style.display = 'block';
-		overlay.setPosition([coords[0] + view.getResolution() * 5, coords[1]]);
-		container.innerHTML = feature.get('name');
+	if (feature && feature.get('fault_id') !== undefined) {
+		tooltip.style.display = 'block';
+		overlay_tooltip.setPosition([coords[0] + view.getResolution() * 5, coords[1]]);
+		tooltip.innerHTML = feature.get('name');
 		$("#map").css("cursor", "pointer");
+		
+	} else if (feature && feature.get('slide_count') !== undefined) {
+		tooltip.style.display = 'block';
+		overlay_tooltip.setPosition([coords[0] + view.getResolution() * 5, coords[1]]);
+		tooltip.innerHTML = feature.get('name');
+		$("#map").css("cursor", "pointer");
+		
 	} else {
-		container.style.display = 'none';
+		tooltip.style.display = 'none';
 		$("#map").css("cursor", "move");
 	}
 };
 
 // Open Fault Page
-var openFaultInfo = function(pixel) {
+var openFaultInfo = function(pixel, coords) {
 	var feature = getFeature(pixel);
-	if (feature && feature.get('fault_id') > 0)
-		window.location = "view.php?id="+feature.get('fault_id');
+	if (feature && feature.get('fault_id') > 0) {
+		window.location = "view.php?id=" + feature.get('fault_id');
+		
+	} else if (feature && feature.get('slide_count') !== undefined) {
+		infobox.style.display = 'block';
+		overlay_infobox.setPosition([coords[0] + view.getResolution() * 5, coords[1]]);
+		infobox.innerHTML = '<b>' + feature.get('name') + '</b><br />' +
+								'Magnitude: ' + feature.get('magnitude') + '<br />' +
+								'Date: ' + feature.get('time') + '<br />' +
+								//'Slide count: ' + feature.get('slide_count') + '<br />' +
+								'<a href="' + feature.get('download') + '" target="_blank">Download data</a>';
+								
+	} else {
+		infobox.style.display = 'none';
+	}		
 };
 
 // getFeature
@@ -325,18 +490,18 @@ var getFeature = function(pixel) {
 // Track mouse movement
 map.on('pointermove', function(evt) {
 	if (evt.dragging)
-		container.style.display = 'none';
+		tooltip.style.display = 'none';
 	else
 		displayFeatureInfo(map.getEventPixel(evt.originalEvent), evt.coordinate);
 
   	// Display coordinates
 	var latlon = ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326');
-	document.getElementById('latlon').innerHTML = '<span style="font-size: 10px;">Latitude: '+latlon[1].toFixed(4)+'&nbsp;&nbsp;&nbsp;Longitude: '+latlon[0].toFixed(4)+'</span>';
+	document.getElementById('latlon').innerHTML = '<span style="font-size: 10px;">Latitude: ' + latlon[1].toFixed(4) + '&nbsp;&nbsp;&nbsp;Longitude: ' + latlon[0].toFixed(4) + '</span>';
 });
 
 // Track mouse clicks
 map.on('click', function(evt) {
-	openFaultInfo(map.getEventPixel(evt.originalEvent));
+	openFaultInfo(map.getEventPixel(evt.originalEvent), evt.coordinate);
 });
 
 
