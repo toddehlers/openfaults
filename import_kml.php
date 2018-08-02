@@ -73,8 +73,8 @@ foreach ($rows as $line) {
 
 // delete old information
 if (!empty($result)) {
-	$GLOBALS['db']->query("TRUNCATE TABLE faults.lines");
-	$GLOBALS['db']->query("TRUNCATE TABLE faults.lines_points");
+	$GLOBALS['db']->query("TRUNCATE TABLE solmaz.lines");
+	$GLOBALS['db']->query("TRUNCATE TABLE solmaz.lines_points");
 }
 
 // Add group and insert coordinates into mysql

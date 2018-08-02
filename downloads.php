@@ -16,8 +16,7 @@ head("Download Data");
 <p>The ArcGIS files were updated on January 26, 2016 and are updated periodically with no set update time. Users are encouraged to regularly check the <a href="http://www.geo.uni-tuebingen.de/faults/">website</a> for the most updated version of the files.</p><br /><br />
 
 <h3>Source Code</h3>
-
-The source code is freely available upon request from: <a href="mailto:todd.ehlers@uni-tuebingen.de">Todd Ehlers</a> and <a href="mailto:solmaz.mohadjer@uni-tuebingen.de">Solmaz Mohadjer</a>
+The source code behind the platform, engine and tools is openly available from a public <a href="https://github.com/timostrube/cafd">GitHub Repository</a>
 
 <?php
 foot();

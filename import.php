@@ -3,6 +3,7 @@
 
 // include all the sub-functions
 require_once 'include/include.php';
+$check_line = '';
 
 if (isset($_POST['submit']) && $_POST['pass'] == $cfg_import_pass) {
 	$file = fopen($_FILES['file']['tmp_name'], "r");
