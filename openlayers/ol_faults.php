@@ -8,8 +8,6 @@ $removeNonHighlight = false;
 
 $where = '';
 
-$result = array();
-
 if (isset($_SESSION['map_search'])) {
 	if (!empty($_SESSION['map_search'])) {
 		$ids = explode(';', $_SESSION['map_search']);
