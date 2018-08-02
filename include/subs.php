@@ -20,11 +20,11 @@ function head($page) {
 	<link rel="apple-touch-icon" sizes="144x144" href="favicon/apple-touch-icon-144x144.png">
 	<link rel="apple-touch-icon" sizes="152x152" href="favicon/apple-touch-icon-152x152.png">
 	<link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon-180x180.png">
-	<link rel="icon" type="image/png" href="faviconfavicon-32x32.png" sizes="32x32">
-	<link rel="icon" type="image/png" href="faviconfavicon-194x194.png" sizes="194x194">
-	<link rel="icon" type="image/png" href="faviconfavicon-96x96.png" sizes="96x96">
+	<link rel="icon" type="image/png" href="favicon/favicon-32x32.png" sizes="32x32">
+	<link rel="icon" type="image/png" href="favicon/favicon-194x194.png" sizes="194x194">
+	<link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96">
 	<link rel="icon" type="image/png" href="favicon/android-chrome-192x192.png" sizes="192x192">
-	<link rel="icon" type="image/png" href="faviconfavicon-16x16.png" sizes="16x16">
+	<link rel="icon" type="image/png" href="favicon/favicon-16x16.png" sizes="16x16">
 	<link rel="manifest" href="favicon/manifest.json">
 	<meta name="msapplication-TileColor" content="#a51e38">
 	<meta name="msapplication-TileImage" content="favicon/mstile-144x144.png">
@@ -48,8 +48,6 @@ echo '
 <div id="wrapper">
 ';
 	include "head.php";
-
-
 }
 
 // HTML-Footer
@@ -93,6 +91,13 @@ function issetReturnGET($var) {
 		return $_GET[$var];
 	else
 		return '';
+}
+
+function issetReturnArrayGET($var) {
+	if (isset($_GET[$var]))
+		return $_GET[$var];
+	else
+		return [''];
 }
 
 function issetReturnPOST($var) {
