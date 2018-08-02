@@ -1,45 +1,25 @@
-/* set fixed margin for medium screens */
-@media screen and (max-width: 1220px) {
-	body {
-		margin: 10px;
-	}
-}
-
-/* hide main title on small screen */
-@media screen and (max-width: 862px) {
-	#top_middle {
-		/* display: none; */
-		float: left;
-		text-align: left;
-	}
-	
-	#top_middle h1 {
-		line-height: 1.5em;
-	}
-}
-
 /* small screens */
 @media screen and (max-width: 600px) {
 	body {
 		margin: 0px;
 	}
-	
+
 	#top_left img {
 		width: 40vw;
 	}
-	
+
 	#top_right img {
 		width: 40vw;
 	}
-	
+
 	#top_middle h1 {
 		font-size: 1em;
 	}
-	
+
 	#image_bar {
 		display: none;
 	}
-	
+
 	#navigation ul {
 		list-style-type: none;
 	}
@@ -49,7 +29,7 @@
 		padding: 5px;
 		font-weight: 800;
 	}
-	
+
 	#nav_sub {
 		margin: 5px 0;
 	}
@@ -57,7 +37,7 @@
 	#nav_sub_default {
 		display: none;
 	}
-	
+
 	#nav_sub_mobile {
 		display: inline;
 	}
@@ -66,22 +46,21 @@
 		border: 0;
 		box-shadow: none;
 	}
-	
+
 	#map_wrapper {
 		float: none;
 	}
-	
+
 	#map {
 		height: 400px;
 		margin-right: 0px;
 	}
-	
+
 	#map_size {
 		width: 100%;
-		min-height: 300px;
 		height: 400px;
 	}
-	
+
 	#map_menu {
 		height: 400px;
 		width: auto;
@@ -89,7 +68,7 @@
 		margin-top: 10px;
 		margin-left: 0px;
 	}
-	
+
 	.view_line {
 		margin-right: 10px;
 	}
@@ -100,7 +79,7 @@
 		margin-bottom: 0px;
 		padding-bottom: 0px;
 	}
-	
+
 	.view_content {
 		overflow: visible;
 		width: 100%;
@@ -117,18 +96,18 @@
 		float: none;
 		overflow: visible;
 	}
-	
+
 	#search_menu td.list:first-child {
 		width: 220px;
 		min-width: 220px;
 	}
-	
+
 	#search_results_wrapper {
 		margin-top: 15px;
 		float: none;
 		width: 100%;
 	}
-	
+
 	#search_results {
 		width: auto;
 		margin-left: 0;
