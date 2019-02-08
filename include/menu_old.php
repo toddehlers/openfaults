@@ -6,12 +6,11 @@ if (!isset($_GET['id']))
 $links = array();
 $unten = array();
 
-array_push($links, array('index.php', 'SHOW MAP', true, null));
-array_push($links, array('search.php', 'SEARCH FAULTS', true, null));
-array_push($links, array('downloads.php', 'DOWNLOADS', true, null));
-array_push($links, array('feedback.php', 'FEEDBACK', true, null));
-array_push($links, array('about.php', 'ABOUT', true, null));
-array_push($links, array('resources.php', 'RESOURCES', true, null));
+array_push($links, array('index.php', 'Show Map', true, 'view.php'));
+array_push($links, array('search.php', 'Search Faults', true, null));
+array_push($links, array('downloads.php', 'Downloads', true, null));
+array_push($links, array('feedback.php', 'Feedback', true, null));
+array_push($links, array('about.php', 'About', true, null));
 
 //array_push($unten, array('view.php?id=' . $_GET['id'], 'Information', $_GET['id'] != 0, $_GET['id'] > 0));
 //array_push($unten, array('index.php?id=' . $_GET['id'], 'Location', $_GET['id'] != 0, $_GET['id'] > 0));

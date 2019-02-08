@@ -10,7 +10,7 @@
 	<div> <!-- style="margin-top: 10px;" -->
 		<h3>Display Layer:</h3>
 		<select id="layer" onchange="selectionChanged();">
-			<option value="" selected>Faults (default)</option>
+			<option value="" selected>Nothing</option>
 			<option value="quake">Earthquakes</option>
 			<option value="induced">Earthquake-induced Landslides</option>
 			<option value="slide">Landslides</option>

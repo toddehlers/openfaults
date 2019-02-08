@@ -1,6 +1,6 @@
 
 	<div id="top_left">
-		<a href=" http://www.geo.uni-tuebingen.de/arbeitsgruppen/mineralogie-geodynamik/forschungsbereich/geologie-geodynamik/workgroup.html" target="_blank"><img src="images/logo-uni-tuebingen.png" /></a>
+		<a href=" https://uni-tuebingen.de/fakultaeten/mathematisch-naturwissenschaftliche-fakultaet/fachbereiche/geowissenschaften/arbeitsgruppen/mineralogie-geodynamik/forschungsbereich/geologie/workgroup/" target="_blank"><img src="images/logo-uni-tuebingen.png" /></a>
 	</div>
 	<!--<div id="top_right">
 		<a href="http://www.umt.edu" target="_blank"><img src="images/logo-uni-montana.png" /></a>
